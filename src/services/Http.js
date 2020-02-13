@@ -13,10 +13,10 @@ export default class Http {
     call(url, method = "GET", body = null) {
         // API headers
         const headers = {
-            Accept: "application/json",
+            "Accept": "*/*",
             "Content-Type": "applicaton/json"
         };
-
+        
         return fetch(url, {
             method: method,
             // mode: 'cors', // no-cors, cors, *same-origin
@@ -32,14 +32,14 @@ export default class Http {
     }
 
     post(url, body = null) {
-        return this.call(url, "POST", body);
+        return this.call(url, "POST", JSON.stringify(body));
     }
 
     put(url, body = null) {
-        return this.call(url, "PUT", body);
+        return this.call(url, "PUT", JSON.stringify(body));
     }
 
     delete(url, body = null) {
-        return this.call(url, "DELETE", body);
+        return this.call(url, "DELETE", JSON.stringify(body));
     }
 }

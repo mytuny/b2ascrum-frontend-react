@@ -1,0 +1,32 @@
+.card {
+    min-height: 65px;
+    margin-top: 8px;
+
+    .card__header {
+        height: 25px;
+        padding: 5px;
+        line-height: 25px;
+
+        i {
+            font-size: 16px;
+            cursor: pointer;
+            float: right;
+            vertical-align: middle;
+        }
+    }
+
+    .card__body {
+        min-height: 130px;
+    }
+
+    .card__form {
+        button {
+            width: 40%;
+            margin-top: 8px;
+            cursor: pointer !important;
+        }
+        textarea {
+            margin-top: 8px;
+        }
+    }
+}

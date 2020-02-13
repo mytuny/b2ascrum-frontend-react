@@ -1,5 +1,7 @@
 .column {
     border: 1px solid green;
+    height: 90vh;
+    overflow-y: scroll;
 
     .column__header {
         height: 48px;
