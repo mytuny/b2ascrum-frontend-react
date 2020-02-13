@@ -6,11 +6,8 @@ class Column extends React.Component {
         super(props);
         // State
         this.state = {
-            name: props.name,
-            cards: [
-                {title: "Card #1", content: ""},
-                {title: "Card #2", content: ""}
-            ]
+            name: this.props.column.name,
+            cards: this.props.column.cards || []
         };
     }
   
@@ -20,7 +17,7 @@ class Column extends React.Component {
             <div className="column col-2">
                 <div className="column__header">{name}</div>
                 <div className="column__tail">
-                    {cards && cards.map((card, c) => <Card key={c} title={card.title} content={card.content} />)}
+                    {cards && cards.map((card, c) => <Card key={c} card={card} />)}
                 </div>
             </div>
           );

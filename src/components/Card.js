@@ -5,8 +5,8 @@ class Card extends React.Component {
         super(props);
         // State
         this.state = {
-            title: props.title,
-            content: props.content
+            title: this.props.card.title,
+            content: this.props.card.content
         };
     }
   
