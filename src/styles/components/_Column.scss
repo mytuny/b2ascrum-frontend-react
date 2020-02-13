@@ -1,3 +1,11 @@
 .column {
     border: 1px solid green;
+
+    .column__header {
+        height: 48px;
+    }
+
+    .column__tail {
+        flex-direction: column;
+    }
 }
