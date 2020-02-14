@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 
+import config from '../config/config';
+
 class Card extends React.Component {
     constructor(props) {
         super(props);
@@ -12,6 +14,8 @@ class Card extends React.Component {
         this.saveCard = this.saveCard.bind(this);
         this.handleTitleEdit = this.handleTitleEdit.bind(this);
         this.handleContentEdit = this.handleContentEdit.bind(this);
+        this.onDragStart = this.onDragStart.bind(this);
+        this.onDragEnd = this.onDragEnd.bind(this);
         // State
         this.state = {
             id: this.props.card._id || "",
@@ -43,14 +47,14 @@ class Card extends React.Component {
         };
         if( this.state.id ) {
             // Update Card
-            axios.put(`http://localhost:5000/api/cards/${this.state.id}`, card)
+            axios.put(`${config('API_BASE_URL')}/cards/${this.state.id}`, card)
                 .then(card => {
                     this.setState({editable: false});
                 })
                 .catch(err => console.log('Failed to create the card.'));
         } else {
             // Create Card
-            axios.post('http://localhost:5000/api/cards', card)
+            axios.post(`${config('API_BASE_URL')}/cards`, card)
                 .then(card => {
                     this.setState({id: card._id, editable: false});
                 })
@@ -73,11 +77,20 @@ class Card extends React.Component {
             content
         }));
     }
+
+    onDragStart(event) {
+        event.dataTransfer.setData('text/plain', JSON.stringify(this.state));
+    }
+
+    onDragEnd(event) {
+        console.log('onDragEnd');
+        this.props.removeCard(this.state.id);
+    }
   
     render() {
         const {title, content} = this.state;
         return (
-            <div className="card">
+            <div className={"card "} draggable onDragStart={(e) => this.onDragStart(e)} onDragEnd={(e) => this.onDragEnd(e)}>
                 <div className="card__header card-title" style={{borderTop: `3px solid ${this.props.color}`}}>
                     {
                         !this.state.editable &&

@@ -1,7 +1,9 @@
 import React from 'react';
 import axios from 'axios';
 import { SketchPicker } from 'react-color';
+import { DragDropContext } from 'react-beautiful-dnd';
 
+import config from '../config/config';
 import Column from './Column';
 import Http from '../services/Http';
 
@@ -12,6 +14,8 @@ class Board extends React.Component {
         this.handleNewListChange = this.handleNewListChange.bind(this);
         this.createColumn = this.createColumn.bind(this);
         this.onColorChange = this.onColorChange.bind(this);
+        this.removeColumn = this.removeColumn.bind(this);
+        this.onDragEnd = this.onDragEnd.bind(this);
         // Load Services
         this.http = new Http();
         // State
@@ -25,7 +29,7 @@ class Board extends React.Component {
 
     componentDidMount() {
         // Load Scrum Columns
-        this.http.get('http://localhost:5000/api/columns')
+        this.http.get(`${config('API_BASE_URL')}/columns`)
             .then(columns => {
                 console.log(columns);
                 this.setState({columns: [...columns]});
@@ -46,7 +50,7 @@ class Board extends React.Component {
             name: this.state.newListName,
             color: this.state.newListColor
         };
-        axios.post('http://localhost:5000/api/columns', column)
+        axios.post(`${config('API_BASE_URL')}/columns`, column)
             .then(response => {
                 const {data: column} = response;
                 this.setState(state => ({
@@ -61,18 +65,38 @@ class Board extends React.Component {
             .catch(err => console.log('Failed to create the column.'));
     }
 
-    onColorChange(color) {console.log("Color: ", color);
+    onColorChange(color) {
         this.setState({
             newListColor: color.hex
         })
-      }
+    }
+
+    removeColumn(id) {
+        const columns = this.state.columns.filter(column => column._id !== id);
+        this.setState({columns});
+    }
+
+    onDragEnd(result) {
+        const { source, destination } = result;
+
+        // dropped outside the list
+        if (!destination) {
+            return;
+        }
+
+        if (source.droppableId === destination.droppableId) {
+            console.log('Dropped at the same column');
+        } else {
+            console.log('Dropped at new column');
+        }
+    }
 
     render() {
         const {columns} = this.state;
         return (
             <div className="board row">
-              {columns && columns.map(column => <Column key={column._id} column={column} />)}
-              <div className="col-2 board__add-list">
+                {columns && columns.map(column => <Column key={column._id} column={column} onColumnDeleted={this.removeColumn} />)}
+                <div className="col-2 board__add-list">
                   {
                       !this.state.showFormNewList &&
                       <button 
@@ -88,7 +112,9 @@ class Board extends React.Component {
                         className="form-control"
                         value={this.state.newListName} 
                         onChange={this.handleNewListChange} />
-                        <SketchPicker color={this.state.newListColor} onChangeComplete={this.onColorChange} />
+                        <div className="add-list__color-picker">
+                            <SketchPicker color={this.state.newListColor} onChangeComplete={this.onColorChange} />
+                        </div>
                         <button 
                             className="btn btn-success"
                             onClick={this.createColumn}

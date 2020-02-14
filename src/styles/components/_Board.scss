@@ -11,10 +11,21 @@
     .board__add-list {
         button {
             width: 100%;
+            margin: 0;
         }
 
         .add-list__form {
-            margin-top: 8px;
+            margin-top: 2px;
+            button {
+                margin: .5rem 0;
+            }
+        }
+
+        .add-list__color-picker {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem;
         }
     }
 }

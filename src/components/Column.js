@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
+import config from '../config/config';
 import Card from './Card';
 
 class Column extends React.Component {
@@ -14,6 +15,9 @@ class Column extends React.Component {
         this.updateColumn = this.updateColumn.bind(this);
         this.cleanList = this.cleanList.bind(this);
         this.deleteColumn = this.deleteColumn.bind(this);
+        this.onDragOver = this.onDragOver.bind(this);
+        this.onDrop = this.onDrop.bind(this);
+        this.removeCard = this.removeCard.bind(this);
         // State
         this.state = {
             id: this.props.column._id,
@@ -53,7 +57,7 @@ class Column extends React.Component {
         };
         if( !this.state.id ) return; // TODO: Handle Error Display
 
-        axios.put(`http://localhost:5000/api/columns/${this.state.id}`, column)
+        axios.put(`${config('API_BASE_URL')}/columns/${this.state.id}`, column)
             .then(column => {
                 this.setState({editable: false});
             })
@@ -73,17 +77,44 @@ class Column extends React.Component {
     deleteColumn() {
         const {id: columnId} = this.state;
         if(!columnId) return;
-        axios.delete(`http://localhost:5000/api/columns/${columnId}`)
+        axios.delete(`${config('API_BASE_URL')}/columns/${columnId}`)
         .then(response => {
-            // TODO: Success notif!
+            this.props.onColumnDeleted(columnId);
         })
         .catch(err => console.log(err));
+    }
+
+    onDragOver(event) {
+        event.preventDefault();
+        console.log('onDragOver');
+    }
+
+    onDrop(event) {
+        console.log('onDrop');
+        const card = JSON.parse(event.dataTransfer.getData('text'));
+        card['_id'] = card.id;
+        delete card['id'];
+        this.setState(state => ({
+            ...state,
+            cards: [
+                ...state.cards,
+                card
+            ]
+        }));
+    }
+
+    removeCard(cardId) {
+        const newCards = this.state.cards.filter(card => card._id !== cardId);
+        this.setState(state => ({
+            ...state,
+            cards: newCards
+        }));
     }
   
     render() {
         const {id, name, cards, color} = this.state;
         return (
-            <div className="column col-2">
+            <div className="column col-2" onDragOver={(e) => this.onDragOver(e)} onDrop={(e) => this.onDrop(e, "complete")}>
                 <div className="column__header" style={{backgroundColor: color}}>
                     {
                         !this.state.editable &&
