@@ -1,4 +1,15 @@
 .board {
     border: 1px solid blue;
-    height: 80vh;
+    height: 90vh;
+
+    .board__add-list {
+        button {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .add-list__form {
+            margin-top: 8px;
+        }
+    }
 }

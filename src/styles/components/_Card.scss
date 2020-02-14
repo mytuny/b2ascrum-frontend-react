@@ -9,6 +9,7 @@
 
         i {
             font-size: 16px;
+            margin-top: 6px;
             cursor: pointer;
             float: right;
             vertical-align: middle;
@@ -21,8 +22,7 @@
 
     .card__form {
         button {
-            width: 40%;
-            margin-top: 8px;
+            margin: 8px;
             cursor: pointer !important;
         }
         textarea {

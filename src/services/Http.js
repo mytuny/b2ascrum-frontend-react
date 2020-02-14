@@ -13,13 +13,13 @@ export default class Http {
     call(url, method = "GET", body = null) {
         // API headers
         const headers = {
-            "Accept": "*/*",
+            "Accept": "application/json",
             "Content-Type": "applicaton/json"
         };
         
         return fetch(url, {
             method: method,
-            // mode: 'cors', // no-cors, cors, *same-origin
+            // mode: 'cors',
             headers,
             body
         })

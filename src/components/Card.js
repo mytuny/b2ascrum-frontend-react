@@ -1,11 +1,11 @@
 import React from 'react';
-import Http from '../services/Http';
+import axios from 'axios';
 
 class Card extends React.Component {
     constructor(props) {
         super(props);
         // Load Services
-        this.http = new Http();
+        // this.http = new Http();
         // Bind Methods
         this.editCard = this.editCard.bind(this);
         this.uneditCard = this.uneditCard.bind(this);
@@ -37,15 +37,17 @@ class Card extends React.Component {
             title: this.state.title,
             content: this.state.content,
             order: this.state.order
-        };console.log(card);
+        };
         if( this.state.id ) {
             // Update Card
-            this.http.put(`http://localhost:5000/api/cards/${this.state.id}`, card)
-                .then(card => console.log('Card Updated!'))
+            axios.put(`http://localhost:5000/api/cards/${this.state.id}`, card)
+                .then(card => {
+                    this.setState({editable: false});
+                })
                 .catch(err => console.log('Failed to create the card.'));
         } else {
             // Create Card
-            this.http.post('http://localhost:5000/api/cards', card)
+            axios.post('http://localhost:5000/api/cards', card)
                 .then(card => {
                     this.setState({id: card._id, editable: false});
                 })
@@ -95,8 +97,12 @@ class Card extends React.Component {
                                 value={content} 
                                 onChange={this.handleContentEdit}
                             ></textarea>
-                            <button onClick={this.uneditCard} className="btn btn-light">Close</button>
-                            <button onClick={this.saveCard} className="btn btn-success">Save</button>
+                            <button onClick={this.uneditCard} className="btn btn-light">
+                                <i className="fa fa-close"></i>
+                            </button>
+                            <button onClick={this.saveCard} className="btn btn-success">
+                                <i className="fa fa-save"></i>
+                            </button>
                         </div>
                     }
                 </div>

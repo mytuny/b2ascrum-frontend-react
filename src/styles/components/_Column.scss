@@ -5,6 +5,12 @@
 
     .column__header {
         height: 48px;
+
+        i {
+            float: right;
+            margin: 5px;
+            cursor: pointer;
+        }
     }
 
     .column__tail {
