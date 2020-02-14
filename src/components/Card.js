@@ -29,6 +29,9 @@ class Card extends React.Component {
 
     uneditCard() {
         this.setState({editable: false});
+        if( !this.state.id ) {
+            this.props.cleanList();
+        }
     }
 
     saveCard() {
@@ -75,7 +78,7 @@ class Card extends React.Component {
         const {title, content} = this.state;
         return (
             <div className="card">
-                <div className="card__header card-title">
+                <div className="card__header card-title" style={{borderTop: `3px solid ${this.props.color}`}}>
                     {
                         !this.state.editable &&
                         <h4>{title} <i onClick={this.editCard} className="fa fa-pencil"></i></h4>

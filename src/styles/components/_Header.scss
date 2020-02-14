@@ -1,0 +1,11 @@
+.app-header {
+    font-size: 2rem;
+    font-weight: bold;
+    background: $primary;
+    height: 4.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}

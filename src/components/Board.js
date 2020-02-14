@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { SketchPicker } from 'react-color';
 
 import Column from './Column';
 import Http from '../services/Http';
@@ -10,13 +11,15 @@ class Board extends React.Component {
         // Bind Methods
         this.handleNewListChange = this.handleNewListChange.bind(this);
         this.createColumn = this.createColumn.bind(this);
+        this.onColorChange = this.onColorChange.bind(this);
         // Load Services
         this.http = new Http();
         // State
         this.state = {
             columns: [],
             showFormNewList: false,
-            newListName: ""
+            newListName: "",
+            newListColor: ""
         };
     }
 
@@ -40,7 +43,8 @@ class Board extends React.Component {
 
     createColumn() {
         let column = {
-            name: this.state.newListName
+            name: this.state.newListName,
+            color: this.state.newListColor
         };
         axios.post('http://localhost:5000/api/columns', column)
             .then(response => {
@@ -56,6 +60,12 @@ class Board extends React.Component {
             })
             .catch(err => console.log('Failed to create the column.'));
     }
+
+    onColorChange(color) {console.log("Color: ", color);
+        this.setState({
+            newListColor: color.hex
+        })
+      }
 
     render() {
         const {columns} = this.state;
@@ -78,6 +88,7 @@ class Board extends React.Component {
                         className="form-control"
                         value={this.state.newListName} 
                         onChange={this.handleNewListChange} />
+                        <SketchPicker color={this.state.newListColor} onChangeComplete={this.onColorChange} />
                         <button 
                             className="btn btn-success"
                             onClick={this.createColumn}

@@ -1,11 +1,16 @@
 .board {
-    border: 1px solid blue;
+    display: flex;
+    flex-wrap: nowrap;
     height: 90vh;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 16px;
+    width: 100%;
+    overflow-x: scroll;
 
     .board__add-list {
         button {
             width: 100%;
-            margin-top: 8px;
         }
 
         .add-list__form {

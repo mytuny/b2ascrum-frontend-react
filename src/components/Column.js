@@ -12,12 +12,15 @@ class Column extends React.Component {
         this.uneditColumn = this.uneditColumn.bind(this);
         this.handleNameEdit = this.handleNameEdit.bind(this);
         this.updateColumn = this.updateColumn.bind(this);
+        this.cleanList = this.cleanList.bind(this);
+        this.deleteColumn = this.deleteColumn.bind(this);
         // State
         this.state = {
             id: this.props.column._id,
             name: this.props.column.name,
             cards: this.props.column.cards || [],
             order: this.props.column.order || 0,
+            color: this.props.column.color || '#EAE7DC',
             showNewCardForm: false,
             editable: false
         };
@@ -56,16 +59,38 @@ class Column extends React.Component {
             })
             .catch(err => console.log('Failed to update the column.'));
     }
+
+    cleanList() {
+        const cleanCards = this.state.cards.filter(card => card._id);console.log('Clean Cards: ', cleanCards);
+        this.setState(state => ({
+            ...state,
+            showNewCardForm: false,
+            editable: false,
+            cards: cleanCards
+        }));
+    }
+
+    deleteColumn() {
+        const {id: columnId} = this.state;
+        if(!columnId) return;
+        axios.delete(`http://localhost:5000/api/columns/${columnId}`)
+        .then(response => {
+            // TODO: Success notif!
+        })
+        .catch(err => console.log(err));
+    }
   
     render() {
-        const {id, name, cards} = this.state;
+        const {id, name, cards, color} = this.state;
         return (
             <div className="column col-2">
-                <div className="column__header">
+                <div className="column__header" style={{backgroundColor: color}}>
                     {
                         !this.state.editable &&
                         <React.Fragment>
+                            <span>
                             {name}
+                            </span>
                             <i onClick={this.editColumn} className="fa fa-pencil"></i>
                             <i className="fa fa-plus" onClick={this.createCard}></i>
                         </React.Fragment>
@@ -73,17 +98,18 @@ class Column extends React.Component {
                     {
                         this.state.editable &&
                         <React.Fragment>
-                            <input type="text" value={name} onChange={this.handleNameEdit} />
-                            <i onClick={this.uneditColumn} className="fa fa-close"></i>
+                            <input className="form-control" type="text" value={name} onChange={this.handleNameEdit} />
                             <i onClick={this.updateColumn} className="fa fa-save"></i>
+                            <i onClick={this.uneditColumn} className="fa fa-close"></i>
+                            <i onClick={this.deleteColumn} className="fa fa-trash"></i>
                         </React.Fragment>
                     }
                 </div>
                 <div className="column__tail">
-                    {cards && cards.map((card, c) => <Card key={c} card={card} order={c+1} />)}
+                    {cards && cards.map((card, c) => <Card key={c} card={card} color={color} order={c+1} removeCard={this.removeCard} />)}
                     {
                         this.state.showNewCardForm &&
-                        <Card card={{column: id, editable: true}} />
+                        <Card card={{column: id, editable: true}} color={color} cleanList={this.cleanList} />
                     }
                 </div>
             </div>
