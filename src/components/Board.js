@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import { SketchPicker } from 'react-color';
-import { DragDropContext } from 'react-beautiful-dnd';
 
 import config from '../config/config';
 import Column from './Column';

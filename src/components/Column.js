@@ -93,6 +93,7 @@ class Column extends React.Component {
         console.log('onDrop');
         const card = JSON.parse(event.dataTransfer.getData('text'));
         card['_id'] = card.id;
+        card['column'] = this.state.id;
         delete card['id'];
         this.setState(state => ({
             ...state,
@@ -101,6 +102,21 @@ class Column extends React.Component {
                 card
             ]
         }));
+        // Update the card
+        axios.put(`${config('API_BASE_URL')}/cards/${card._id}`, {column: this.state.id})
+        .then(response => {
+            console.log('OK');
+            // TODO: Notify!
+        })
+        .catch(err => {
+            const oldCards = this.state.cards.filter(c => c.id !== card._id);
+            this.setState(state => ({
+                ...state,
+                cards: oldCards
+            }));
+            // TODO: Revert the card to previous list
+            // TODO: Notify!
+        });
     }
 
     removeCard(cardId) {
